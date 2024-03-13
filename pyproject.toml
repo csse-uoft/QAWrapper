@@ -18,7 +18,7 @@ repository = "https://github.com/csse-uoft/QAWrapper"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = [".*"]
+include = ["qawrapper", "qawrapper.*"]
 exclude = ["tests"]
 namespaces = false
 
