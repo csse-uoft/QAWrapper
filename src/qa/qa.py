@@ -76,7 +76,7 @@ class QA(ABC):
 
     """
 
-    AGG_PARTIAL = None  # overridden by qa0 and qa1
+    AGG_PARTIAL = {}  # overridden by qa0 and qa1
     ENTITIES = []   # overridden by qa0 and qa1
     def __init__(self, context, entity):
         """Instantiate only if the entity is valid. Raise exception otherwise.
@@ -128,13 +128,9 @@ class QA(ABC):
 
         :return: top answers
         """
-        print('in run_qa 1', ner)
         self.set_questions()
-        print('in run_qa 2', ner)
         self.set_answers(ner)
-        print('in run_qa 3', ner)
         self.qa_info = self.top_answers()
-        print('in run_qa 4', ner, self.qa_info)
         return self.qa_info
 
     def get_display_info(self):

@@ -9,25 +9,6 @@ Original file is located at
 
 import pandas as pd
 import re
-#
-# filename = "drive/MyDrive/NLP Project/data/QA_results/QA layer/answers/rank_results/HS_layer0_fixed_eval.xlsx"
-# xls = xlrd.open_workbook(filename, on_demand=True)
-# sn = xls.sheet_names()
-# concat_dfs = []
-# for sheet in sn:
-#   this_df = pd.read_excel(filename, sheet_name = sheet)[["idx", "qid", "response", "score", "text"]]
-#   this_df["entity"] = sheet
-#   concat_dfs.append(this_df)
-# all_df_keywords = pd.concat(concat_dfs, ignore_index=True)
-# all_df_keywords
-
-ENTITIES = [
-  "program_name",
-  "client",
-  "need_satisfier",
-  "outcome",
-  "catchment_area"
-]
 
 def extract_unique_entities(all_df):
   unique_ent_map = {}
@@ -46,8 +27,6 @@ def extract_unique_entities(all_df):
         unique_ent_map[idx][entity][row.at["response"]] = row.at["score"]
   return unique_ent_map
 
-# all_keywords_dict = extract_unique_entities(all_df_keywords)
-# all_keywords_dict
 
 def get_q_by_entity(entity_type, curr_entity:str):
   gv_entity = {}

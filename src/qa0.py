@@ -131,5 +131,5 @@ if __name__ == '__main__':
     entity = "client"
     qa0 = QA0(description, entity)
     output_dic = qa0.run_qa(ner=True)
-
+    print(output_dic)
 

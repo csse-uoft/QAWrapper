@@ -46,10 +46,6 @@ class QA1(QA):
 
     # def update_given_ner(self, ent_type: str, givens: dict[object: float]):
     def update_given_ner(self, ent_type, givens):
-        print(">"*30)
-        print(ent_type)
-        print(givens)
-        print(self.ENTITIES)
         """Update the given keywords for an entity type in the instance variable given
 
         :param ent_type: entity type, abbreviated by two characters, of the givens
@@ -80,25 +76,15 @@ class QA1(QA):
         """
         prepare the results formatting and set questions
         """
-        print("in set Q")
         new_QAs = {}
         all_Qs = self.make_questions()
-        print("\tx:", self.entity)
-        for k,v in all_Qs.items():
-            print("\ty:", k, v)
         for giv_ent_type in all_Qs.keys():
-            print("\t\t>>a", giv_ent_type)
             for keyword in all_Qs[giv_ent_type]:
-                print("\t\t>>b", keyword)
-                print("\t\t>>c", all_Qs[giv_ent_type][keyword].keys())
                 if not self.entity in all_Qs[giv_ent_type][keyword].keys():
                     continue
                 try:
                     new_QAs[self.entity] = []
                     for question in all_Qs[giv_ent_type][keyword][self.entity]:
-                        print("\t\t>>c", question)
-                        print("\t\t>>d", self.given[giv_ent_type])
-                        print("\t\t>>e", self.given[giv_ent_type][keyword])
                         new_qa = {"keyword": str(keyword), "giv_ent": giv_ent_type,
                                   "giv_score": self.given[giv_ent_type][keyword],
                                   "question": question, "answer": None, "start": None, "end": None, "score": None}
@@ -108,14 +94,12 @@ class QA1(QA):
                     print(type(e), e)
                     return {}
         self.QAs = new_QAs
-        print("set Q", self.QAs)
 
     def set_answers(self, ner):
         """
         Run the model and add the outputted information to QAs
         :param ner: boolean that tells whether this result will be ner or phrase data level hypothesis
         """
-        print("set A", self.QAs)
         for entity in self.QAs:
             for qa in self.QAs[entity]:
                 QA_input = {
@@ -158,3 +142,4 @@ if __name__ == '__main__':
     qa1.update_given_ner(ent_type="program_name", givens={"St.Mary's Church": 0.5})
     print(qa1.given)
     output_dic = qa1.run_qa(ner=True)
+    print(output_dic)
