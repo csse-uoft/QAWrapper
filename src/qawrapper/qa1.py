@@ -1,5 +1,5 @@
-from src.qa.qa import QA, QAModel
-from src.qa import qa_generate_layer1
+from src.qawrapper.qa.qa import QA, QAModel
+from src.qawrapper.qa import qa_generate_layer1
 import pandas as pd
 import os
 from collections import defaultdict
@@ -31,7 +31,7 @@ class QA1(QA):
         get aggregate scores for a particular entity
 
     """
-    AGG_PARTIAL = pd.read_csv("src/qa/aggregate_scores/layer1_partial2_aggregate_comb.csv", index_col=0).to_dict('index')
+    AGG_PARTIAL = pd.read_csv("src/qawrapper/qa/aggregate_scores/layer1_partial2_aggregate_comb.csv", index_col=0).to_dict('index')
     ENTITIES = [
         "program_name",
         "client",

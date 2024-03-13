@@ -1,4 +1,4 @@
-from src.qa.qa import QA, QAModel
+from src.qawrapper.qa.qa import QA, QAModel
 import pandas as pd
 import os
 
@@ -59,7 +59,7 @@ class QA0(QA):
                                        "Where is this happening at?"]}
     ENTITIES = list(default_questions.keys())
 
-    AGG_PARTIAL = pd.read_csv("src/qa/aggregate_scores/layer0_partial2_aggregate.csv", index_col=0).to_dict('index')
+    AGG_PARTIAL = pd.read_csv("src/qawrapper/qa/aggregate_scores/layer0_partial2_aggregate.csv", index_col=0).to_dict('index')
 
     def __init__(self, context, entity=None):
         super().__init__(context, entity)
