@@ -20,7 +20,6 @@ repository = "https://github.com/csse-uoft/QAWrapper"
 where = ["src"]
 include = ["qawrapper", "qawrapper.*"]
 exclude = ["tests"]
-namespaces = false
 
 
 [tool.poetry]
