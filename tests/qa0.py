@@ -1,6 +1,6 @@
 import unittest
 import os
-from src.qa0 import QA0
+from src.qawrapper.qa0 import QA0
 
 class QA0Testt(unittest.TestCase):
     def test_1(self):
