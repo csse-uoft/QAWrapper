@@ -78,18 +78,18 @@ class QA(ABC):
 
     AGG_PARTIAL = {}  # overridden by qa0 and qa1
     ENTITIES = []   # overridden by qa0 and qa1
-    def __init__(self, context, entity):
+    def __init__(self, context, out_entity):
         """Instantiate only if the entity is valid. Raise exception otherwise.
 
         :param context: text to be the context of QA input
         """
-        if entity not in self.ENTITIES:
-            raise Exception(f"Invalid entity type: {entity}")
+        if out_entity not in self.ENTITIES:
+            raise Exception(f"Invalid entity type: {out_entity}")
         self.context = context
         self.QAs = None
         self.qa_info = {}
         self.display_info = {}
-        self.entity = entity
+        self.out_entity = out_entity
 
     def set_questions(self):
         """
@@ -103,7 +103,7 @@ class QA(ABC):
         """
         raise NotImplementedError
 
-    def get_agg_score(self, entity):
+    def get_agg_score(self, out_entity):
         raise NotImplementedError
 
 
@@ -111,16 +111,16 @@ class QA(ABC):
         """
         Sort QAs by ranking, where the default is by score
         """
-        for entity in self.QAs:
-            self.QAs[entity] = sorted(self.QAs[entity], key=lambda d: d['score'])
+        for out_entity in self.QAs:
+            self.QAs[out_entity] = sorted(self.QAs[out_entity], key=lambda d: d['score'])
 
     def top_answers(self):
-        """Add the top ranked answer for each entity to qa_info
+        """Add the top ranked answer for each out_entity to qa_info
 
         :return: top answers
         """
         self.rank_answers()
-        self.qa_info = {key: self.QAs[key][0] for key in self.QAs}
+        self.qa_info = {out_entity: self.QAs[out_entity][0] for out_entity in self.QAs}
         return self.qa_info
 
     def run_qa(self, ner=False):
@@ -139,8 +139,8 @@ class QA(ABC):
         :return: formatted QA outputs to be displayed to users
         """
         display_info = {}
-        for entity in self.qa_info:
-            display_info[entity] = self.qa_info[entity]["answer"]
+        for out_entity in self.qa_info:
+            display_info[out_entity] = self.qa_info[out_entity]["answer"]
         self.display_info = display_info
         return display_info
 

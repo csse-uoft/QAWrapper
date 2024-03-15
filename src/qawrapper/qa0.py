@@ -21,7 +21,7 @@ class QA0(QA):
     set_answers(ner)
         run the qa model to get answers
 
-    get_agg_score(entity)
+    get_agg_score(out_entity)
         get aggregate scores for a particular entity
 
     """
@@ -61,8 +61,8 @@ class QA0(QA):
 
     AGG_PARTIAL = pd.read_csv(os.path.dirname(os.path.abspath(sys.modules[QA.__module__].__file__))+"/aggregate_scores/layer0_partial2_aggregate.csv", index_col=0).to_dict('index')
 
-    def __init__(self, context, entity=None):
-        super().__init__(context, entity)
+    def __init__(self, context, out_entity=None):
+        super().__init__(context, out_entity)
 
     def set_questions(self):
         """
@@ -71,11 +71,11 @@ class QA0(QA):
         questions = self.default_questions
         new_QAs = {}
         try:
-            new_QAs[self.entity] = []
-            for question in questions[self.entity]:
+            new_QAs[self.out_entity] = []
+            for question in questions[self.out_entity]:
                 new_qa = {"question": question, "answer": None,
                           "start": None, "end": None, "score": None}
-                new_QAs[self.entity].append(new_qa)
+                new_QAs[self.out_entity].append(new_qa)
         except KeyError as e:
             return e
         self.QAs = new_QAs
@@ -85,8 +85,8 @@ class QA0(QA):
         Run the model and add the outputted information to QAs
         :param ner: boolean that tells whether this result will be ner or phrase data level hypothesis
         """
-        for entity in self.QAs:
-            for qa in self.QAs[entity]:
+        for out_entity in self.QAs:
+            for qa in self.QAs[out_entity]:
                 QA_input = {
                     'question': qa["question"],
                     'context': self.context
@@ -97,25 +97,25 @@ class QA0(QA):
                 qa["start"] = res["start"]
                 qa["end"] = res["end"]
                 if ner:
-                    qa["score"] = res["score"] * 0.3 + self.get_agg_score(entity) * 0.7
+                    qa["score"] = res["score"] * 0.3 + self.get_agg_score(out_entity) * 0.7
                 else:
                     qa["score"] = res["score"]
 
-    def get_agg_score(self, entity):
+    def get_agg_score(self, out_entity):
         """
         get aggregate scores for a particular entity
-        :param entity: entity type that we want to get aggregate score for
+        :param out_entity: entity type that we want to get aggregate score for
         :return: precision of the entity type given
         """
-        return self.AGG_PARTIAL[entity]['precision']
+        return self.AGG_PARTIAL[out_entity]['precision']
 
     # def rank_answers(self, rank=None):
     #     if rank is None:
     #         super().rank_answers()
     #     else:
     #         resorted_QAs = {}
-    #         for entity in self.QAs:
-    #             resorted_QAs[entity] = [self.QAs[entity][i] for i in rank[entity]]
+    #         for out_entity in self.QAs:
+    #             resorted_QAs[out_entity] = [self.QAs[out_entity][i] for i in rank[out_entity]]
     #         self.QAs = resorted_QAs
 
     def top_answers(self):

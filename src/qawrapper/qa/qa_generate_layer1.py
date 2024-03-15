@@ -28,69 +28,69 @@ def extract_unique_entities(all_df):
   return unique_ent_map
 
 
-def get_q_by_entity(entity_type, curr_entity:str):
+def get_q_by_entity(in_entity, in_value:str):
   gv_entity = {}
-  if entity_type == "program_name":
-    gv_entity = {"client": [f"Who does {curr_entity} offer services to?", 
-                        f"Who is {curr_entity} helping?"], 
-                 "need_satisifer": [f"What does {curr_entity} provide?",
-                        f"List all that is offered by {curr_entity}."], 
-                 "outcome": [f"What does {curr_entity} achieve?",
-                        f"What is the goal of {curr_entity}?"], 
-                 "catchment_area": [f"Where is {curr_entity} offered at?",
-                        f"What is the location of {curr_entity}?"]}
+  if in_entity == "program_name":
+    gv_entity = {"client": [f"Who does {in_value} offer services to?", 
+                        f"Who is {in_value} helping?"], 
+                 "need_satisifer": [f"What does {in_value} provide?",
+                        f"List all that is offered by {in_value}."], 
+                 "outcome": [f"What does {in_value} achieve?",
+                        f"What is the goal of {in_value}?"], 
+                 "catchment_area": [f"Where is {in_value} offered at?",
+                        f"What is the location of {in_value}?"]}
 
-  if entity_type == "client":
-    curr_entity = re.sub(r'^to ', "", curr_entity)
-    gv_entity = {"program": [f"Which program provides services to {curr_entity}?",
-                        f"What program does {curr_entity} benefit from?"], 
-                 "need_satisifer": [f"What services help {curr_entity}?",
-                        f"List all that is offered to {curr_entity}."], 
-                 "outcome": [f"How does the program help {curr_entity}?",
-                        f"What do the services aim to do to {curr_entity}?"], 
-                 "catchment_area": [f"Where is the program offered to {curr_entity}?"]}
+  if in_entity == "client":
+    in_value = re.sub(r'^to ', "", in_value)
+    gv_entity = {"program_name": [f"Which program provides services to {in_value}?",
+                        f"What program does {in_value} benefit from?"], 
+                 "need_satisifer": [f"What services help {in_value}?",
+                        f"List all that is offered to {in_value}."], 
+                 "outcome": [f"How does the program help {in_value}?",
+                        f"What do the services aim to do to {in_value}?"], 
+                 "catchment_area": [f"Where is the program offered to {in_value}?"]}
 
-  if entity_type == "need_satisifer":
-    gv_entity = {"program": [f"What program offers {curr_entity}?",
-                        f"Who is the provider of {curr_entity}?"], 
-                 "client": [f"Who receives {curr_entity}?",
-                        f"Who is the program helping through {curr_entity}?"], 
-                 "outcome": [f"What does {curr_entity} aim to do?",
-                        f"What does the program achieve through {curr_entity}?"], 
-                 "catchment_area": [f"Where is {curr_entity} provided?"]}
+  if in_entity == "need_satisifer":
+    gv_entity = {"program_name": [f"What program offers {in_value}?",
+                        f"Who is the provider of {in_value}?"], 
+                 "client": [f"Who receives {in_value}?",
+                        f"Who is the program helping through {in_value}?"], 
+                 "outcome": [f"What does {in_value} aim to do?",
+                        f"What does the program achieve through {in_value}?"], 
+                 "catchment_area": [f"Where is {in_value} provided?"]}
 
-  if entity_type == "no":   
-    curr_entity = re.sub(r'^to ', "", curr_entity)           
-    gv_entity = {"program": [f"Which program contributes to {curr_entity}?",
-                        f"Which program allows {curr_entity}?"], 
-                 "client": [f"Who now needs {curr_entity}?",
-                        f"Who does the program help with {curr_entity}?"], 
-                 "need_satisifer": [f"What services aim to {curr_entity}?",
-                        f"What does the program offer in order to {curr_entity}?"], 
-                 "catchment_area": [f"Where does the program contributes to {curr_entity}?"]}
+  if in_entity == "outcome":   
+    in_value = re.sub(r'^to ', "", in_value)           
+    gv_entity = {"program_name": [f"Which program contributes to {in_value}?",
+                        f"Which program allows {in_value}?"], 
+                 "client": [f"Who now needs {in_value}?",
+                        f"Who does the program help with {in_value}?"], 
+                 "need_satisifer": [f"What services aim to {in_value}?",
+                        f"What does the program offer in order to {in_value}?"], 
+                 "catchment_area": [f"Where does the program contributes to {in_value}?"]}
 
-  if entity_type == "catchment_area":      
-    curr_entity = re.sub(r'^in ', "", curr_entity)       
-    gv_entity = {"program": [f"Who provides in location {curr_entity}?"], 
-                 "client": [f"Who benefits from the program located in {curr_entity}?",
-                        f"Who receives services located in {curr_entity}?"], 
-                 "need_satisifer": [f"What services are offered in location {curr_entity}?",
-                        f"List all that the program provides in {curr_entity}."], 
-                 "outcome": [f"How do these services contribute in {curr_entity}?",
-                        f"List all that the program achieves in {curr_entity}."]}
+  if in_entity == "catchment_area":      
+    in_value = re.sub(r'^in ', "", in_value)       
+    gv_entity = {"program_name": [f"Who provides in location {in_value}?"], 
+                 "client": [f"Who benefits from the program located in {in_value}?",
+                        f"Who receives services located in {in_value}?"], 
+                 "need_satisifer": [f"What services are offered in location {in_value}?",
+                        f"List all that the program provides in {in_value}."], 
+                 "outcome": [f"How do these services contribute in {in_value}?",
+                        f"List all that the program achieves in {in_value}."]}
 
   return gv_entity
 
-def create_layer1_given(new_all_correct_entities):
+def create_layer1_given(new_all_in_entities):
   this_qs = {}
-  for idx in new_all_correct_entities:
+  for idx in new_all_in_entities:
     this_qs[idx] = {}
-    for entity in new_all_correct_entities[idx]:
-      this_qs[idx][entity] = {}
-      for response in new_all_correct_entities[idx][entity]:
-        custom_questions = get_q_by_entity(entity, response)
-        score = new_all_correct_entities[idx][entity][response]
-        this_qs[idx][entity][response] = [custom_questions, score]
+    for in_entity in new_all_in_entities[idx]:
+      this_qs[idx][in_entity] = {}
+      for response in new_all_in_entities[idx][in_entity]:
+        custom_questions = get_q_by_entity(in_entity, response)
+        score = new_all_in_entities[idx][in_entity][response]
+        this_qs[idx][in_entity][response] = [custom_questions, score]
 
   return this_qs
 

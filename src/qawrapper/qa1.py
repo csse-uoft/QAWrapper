@@ -32,31 +32,25 @@ class QA1(QA):
 
     """
     AGG_PARTIAL = pd.read_csv(os.path.dirname(os.path.abspath(sys.modules[QA.__module__].__file__))+"/aggregate_scores/layer1_partial2_aggregate_comb.csv", index_col=0).to_dict('index')
-    ENTITIES = [
-        "program_name",
-        "client",
-        "need_satisfier",
-        "outcome",
-        "catchment_area"
-    ]
+    ENTITIES = [] #will be overwritten
 
-    def __init__(self, context, entity):
-        super().__init__(context, entity)
+    def __init__(self, context, out_entity):
+        super().__init__(context, out_entity)
         self.given = defaultdict(dict)
 
     # def update_given_ner(self, ent_type: str, givens: dict[object: float]):
-    def update_given_ner(self, ent_type, givens):
+    def update_given_ner(self, in_entity, givens):
         """Update the given keywords for an entity type in the instance variable given
 
         :param ent_type: entity type, abbreviated by two characters, of the givens
         :param givens: given keywords to be updated
         """
-        if ent_type in self.ENTITIES:
+        if in_entity in self.ENTITIES:
             for g in givens:
-                if (g not in self.given[ent_type]) or (self.given[ent_type][g] < givens[g]):
-                    self.given[ent_type][g] = givens[g]
+                if (g not in self.given[in_entity]) or (self.given[in_entity][g] < givens[g]):
+                    self.given[in_entity][g] = givens[g]
         else:
-            print("given type is invalid.", ent_type, self.given)
+            print("given type is invalid.", in_entity, self.given)
 
     def make_questions(self):
         """
@@ -65,11 +59,11 @@ class QA1(QA):
         :return: all questions
         """
         all_Qs = {}
-        for giv_ent_type in self.given:
-            all_Qs[giv_ent_type] = {}
-            for keyword in self.given[giv_ent_type]:
-                questions = qa_generate_layer1.get_q_by_entity(giv_ent_type, str(keyword))
-                all_Qs[giv_ent_type][str(keyword)] = questions
+        for in_entity in self.given:
+            all_Qs[in_entity] = {}
+            for keyword in self.given[in_entity]:
+                questions = qa_generate_layer1.get_q_by_entity(in_entity, str(keyword))
+                all_Qs[in_entity][str(keyword)] = questions
         return all_Qs
 
     def set_questions(self):
@@ -78,17 +72,17 @@ class QA1(QA):
         """
         new_QAs = {}
         all_Qs = self.make_questions()
-        for giv_ent_type in all_Qs.keys():
-            for keyword in all_Qs[giv_ent_type]:
-                if not self.entity in all_Qs[giv_ent_type][keyword].keys():
+        for in_entity in all_Qs.keys():
+            for keyword in all_Qs[in_entity]:
+                if not self.out_entity in all_Qs[in_entity][keyword].keys():
                     continue
                 try:
-                    new_QAs[self.entity] = []
-                    for question in all_Qs[giv_ent_type][keyword][self.entity]:
-                        new_qa = {"keyword": str(keyword), "giv_ent": giv_ent_type,
-                                  "giv_score": self.given[giv_ent_type][keyword],
+                    new_QAs[self.out_entity] = []
+                    for question in all_Qs[in_entity][keyword][self.out_entity]:
+                        new_qa = {"keyword": str(keyword), "giv_ent": in_entity,
+                                  "giv_score": self.given[in_entity][keyword],
                                   "question": question, "answer": None, "start": None, "end": None, "score": None}
-                        new_QAs[self.entity].append(new_qa)
+                        new_QAs[self.out_entity].append(new_qa)
                 except KeyError as e:
                     print("Error....")
                     print(type(e), e)
@@ -100,8 +94,8 @@ class QA1(QA):
         Run the model and add the outputted information to QAs
         :param ner: boolean that tells whether this result will be ner or phrase data level hypothesis
         """
-        for entity in self.QAs:
-            for qa in self.QAs[entity]:
+        for in_entity in self.QAs:
+            for qa in self.QAs[in_entity]:
                 QA_input = {
                     'question': qa["question"],
                     'context': self.context
@@ -111,26 +105,26 @@ class QA1(QA):
                 qa["start"] = res["start"]
                 qa["end"] = res["end"]
                 if ner:
-                    entity_code = qa["giv_ent"] + "_" + entity
-                    qa["score"] = res["score"] * 0.3 + self.get_agg_score(entity_code) * 0.5 + qa["giv_score"] * 0.2
+                    out_entity = qa["giv_ent"] + "_" + in_entity
+                    qa["score"] = res["score"] * 0.3 + self.get_agg_score(out_entity) * 0.5 + qa["giv_score"] * 0.2
                 else:
                     qa["score"] = res["score"]
 
-    def get_agg_score(self, entity):
+    def get_agg_score(self, out_entity):
         """
         get aggregate scores for a particular entity
         :param entity: entity type that we want to get aggregate score for
         :return: precision of the entity type given
         """
-        return self.AGG_PARTIAL[entity]['precision']
+        return self.AGG_PARTIAL[out_entity]['precision']
 
     # def rank_answers(self, rank=None):
     #     if rank is None:
     #         super().rank_answers()
     #     else:
     #         resorted_QAs = {}
-    #         for entity in self.QAs:
-    #             resorted_QAs[entity] = [self.QAs[entity][i] for i in rank[entity]]
+    #         for out_entity in self.QAs:
+    #             resorted_QAs[out_entity] = [self.QAs[out_entity][i] for i in rank[out_entity]]
     #         self.QAs = resorted_QAs
 
 
