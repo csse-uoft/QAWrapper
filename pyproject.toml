@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qawrapper"
-version = "0.0.1"
+version = "0.0.2"
 description = "Python wrapper for QuestionAnswer Interface"
 authors = [
     { name = "Bart Gajderowicz", email = "bgajdero@gmail.com" },

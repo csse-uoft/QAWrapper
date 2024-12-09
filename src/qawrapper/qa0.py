@@ -18,7 +18,7 @@ class QA0(QA):
     set_questions()
         prepare the results formatting and set questions
 
-    set_answers(ner)
+    set_answers(adjust_score)
         run the qa model to get answers
 
     get_agg_score(out_entity)
@@ -80,7 +80,7 @@ class QA0(QA):
             return e
         self.QAs = new_QAs
 
-    def set_answers(self, ner):
+    def set_answers(self, adjust_score):
         """
         Run the model and add the outputted information to QAs
         :param ner: boolean that tells whether this result will be ner or phrase data level hypothesis
@@ -96,7 +96,7 @@ class QA0(QA):
                 qa["answer"] = res["answer"]
                 qa["start"] = res["start"]
                 qa["end"] = res["end"]
-                if ner:
+                if adjust_score:
                     qa["score"] = res["score"] * 0.3 + self.get_agg_score(out_entity) * 0.7
                 else:
                     qa["score"] = res["score"]

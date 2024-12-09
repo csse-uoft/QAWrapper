@@ -123,13 +123,13 @@ class QA(ABC):
         self.qa_info = {out_entity: self.QAs[out_entity][0] for out_entity in self.QAs}
         return self.qa_info
 
-    def run_qa(self, ner=False):
+    def run_qa(self, adjust_score=False):
         """Do all from setting the question to selecting the top answers
 
         :return: top answers
         """
         self.set_questions()
-        self.set_answers(ner)
+        self.set_answers(adjust_score)
         self.qa_info = self.top_answers()
         return self.qa_info
 

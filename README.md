@@ -6,7 +6,7 @@ Question and Answer Wrapper
 
 ## To run example
 `conda activate PyQAWrapper`
-
-`python -m src.qa0`
-`python -m src.qa1`
+`cd src`
+`python -m qawrapper.main_qa0`
+`python -m qawrapper.main_qa1`
 
